@@ -93,6 +93,8 @@
       <div class="toolbar" style="margin-top:12px;">
         <button class="btn-accent" onclick="loadDemo()">Load Demo Data</button>
         <button onclick="exportJson()">Export JSON</button>
+        <button onclick="exportCsv()">Export CSV</button>
+
 
         <label for="importFileJson" class="btn-accent" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import JSON</label>
         <input id="importFileJson" type="file" accept="application/json" class="hidden" onchange="importJson(this.files[0])" />
