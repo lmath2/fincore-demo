@@ -1,67 +1,71 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <h1>FinCoreApp — Books → Tax Preview (Freelancers MVP) <span class="pill">100% Free / No Backend</span></h1>
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform?usp=header" target="_blank" rel="noopener" class="pill" style="margin-left:8px;">Join the waitlist</a>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FinCoreApp — Books → Tax Preview (Demo)</title>
   <style>
     :root { --bg:#0b1020; --card:#131a33; --ink:#e8ebff; --muted:#aab1d6; --accent:#8fd3ff; --ok:#56f59a; --warn:#ffd166; --bad:#ff6b6b; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; background: var(--bg); color: var(--ink); }
-    header { padding: 24px 20px; border-bottom: 1px solid #1d2549; position: sticky; top:0; backdrop-filter: blur(6px); background: #0b1020cc; z-index: 2;}
-    h1 { margin:0; font-size: 20px; letter-spacing: 0.3px;}
-    .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-    .grid { display: grid; gap: 16px; }
-    .cols-2 { grid-template-columns: 1.2fr 1fr; }
-    .card { background: var(--card); border: 1px solid #1d2549; border-radius: 14px; padding: 16px; }
-    .card h2 { margin: 0 0 10px; font-size: 18px; }
-    label { font-size: 12px; color: var(--muted); display:block; margin-bottom: 6px; }
-    input, select, button, textarea { font: inherit; color: var(--ink); }
-    input[type="date"], input[type="number"], input[type="text"], select { width: 100%; padding: 10px; background: #0f1630; border: 1px solid #28305b; border-radius: 10px; }
-    input[type="number"] { text-align: right; }
-    button { background: #1a2550; border: 1px solid #2a3b7a; padding: 10px 14px; border-radius: 10px; cursor:pointer; }
-    button:hover { border-color:#3e58b5; }
-    .btn-accent { background: #12314b; border-color: #245f89; }
-    .btn-danger { background:#3a1420; border-color:#78354b; }
-    .row { display:grid; grid-template-columns: repeat(5,1fr) 120px; gap:10px; align-items:end; }
-    .row > div { }
-    .toolbar { display:flex; gap:10px; flex-wrap: wrap; }
-    table { width:100%; border-collapse: collapse; }
-    th, td { padding: 10px 8px; border-bottom: 1px solid #202a55; font-size: 14px; }
-    th { text-align: left; color: var(--muted); font-weight: 600; }
-    td.num { text-align: right; font-variant-numeric: tabular-nums; }
-    .pill { display:inline-block; padding:3px 8px; border:1px solid #2a3b7a; border-radius:999px; color: var(--accent); font-size:12px; }
-    .muted { color: var(--muted); }
-    details { background:#0f1630; border:1px solid #28305b; border-radius:10px; padding:8px 10px; }
-    details > summary { cursor:pointer; color: var(--accent); }
-    .totals { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .kpi { background:#0f1630; border:1px solid #28305b; border-radius:12px; padding:12px; }
-    .kpi .label { color: var(--muted); font-size:12px; }
-    .kpi .value { font-size: 20px; margin-top:6px; font-variant-numeric: tabular-nums; }
-    footer { padding: 20px; text-align:center; color: var(--muted); }
-    .right { text-align:right; }
-    .success { color: var(--ok); }
-    .warning { color: var(--warn); }
-    .danger { color: var(--bad); }
-    .hidden { display:none; }
-    .note { font-size:12px; color: var(--muted); }
-    code.small { font-size:12px; background:#0f1630; border:1px solid #28305b; padding:2px 6px; border-radius:6px; }
+    * { box-sizing:border-box }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; background:var(--bg); color:var(--ink) }
+    header { padding:24px 20px; border-bottom:1px solid #1d2549; position:sticky; top:0; backdrop-filter:blur(6px); background:#0b1020cc; z-index:2 }
+    h1 { margin:0; font-size:20px; letter-spacing:.3px }
+    .container { max-width:1100px; margin:0 auto; padding:20px }
+    .grid { display:grid; gap:16px }
+    .cols-2 { grid-template-columns:1.2fr 1fr }
+    @media (max-width:900px){ .cols-2 { grid-template-columns:1fr } }
+    .card { background:var(--card); border:1px solid #1d2549; border-radius:14px; padding:16px }
+    .card h2 { margin:0 0 10px; font-size:18px }
+    label { font-size:12px; color:var(--muted); display:block; margin-bottom:6px }
+    input,select,button,textarea,a.btn { font:inherit; color:var(--ink) }
+    input[type="date"],input[type="number"],input[type="text"],select { width:100%; padding:10px; background:#0f1630; border:1px solid #28305b; border-radius:10px }
+    input[type="number"]{ text-align:right }
+    button,.btn { background:#1a2550; border:1px solid #2a3b7a; padding:10px 14px; border-radius:10px; cursor:pointer; text-decoration:none; display:inline-block }
+    button:hover,.btn:hover{ border-color:#3e58b5 }
+    .btn-accent{ background:#12314b; border-color:#245f89 }
+    .btn-danger{ background:#3a1420; border-color:#78354b }
+    .row { display:grid; grid-template-columns: repeat(5,1fr) 120px; gap:10px; align-items:end }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap }
+    table { width:100%; border-collapse:collapse }
+    th,td { padding:10px 8px; border-bottom:1px solid #202a55; font-size:14px }
+    th { text-align:left; color:var(--muted); font-weight:600 }
+    td.num { text-align:right; font-variant-numeric:tabular-nums }
+    .pill { display:inline-block; padding:3px 8px; border:1px solid #2a3b7a; border-radius:999px; color:var(--accent); font-size:12px }
+    .muted{ color:var(--muted) }
+    details { background:#0f1630; border:1px solid #28305b; border-radius:10px; padding:8px 10px }
+    details>summary{ cursor:pointer; color:var(--accent) }
+    .totals{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+    .kpi{ background:#0f1630; border:1px solid #28305b; border-radius:12px; padding:12px }
+    .kpi .label{ color:var(--muted); font-size:12px }
+    .kpi .value{ font-size:20px; margin-top:6px; font-variant-numeric:tabular-nums }
+    footer{ padding:20px; text-align:center; color:var(--muted) }
+    .right{ text-align:right }
+    .hidden{ display:none }
+    .note{ font-size:12px; color:var(--muted) }
+    code.small{ font-size:12px; background:#0f1630; border:1px solid #28305b; padding:2px 6px; border-radius:6px }
+    .topbar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap }
   </style>
 </head>
 <body>
   <header class="container">
-    <h1>FinCore Lite — Books → Tax Preview (Freelancers MVP) <span class="pill">100% Free / No Backend</span></h1>
+    <div class="topbar">
+      <h1>FinCoreApp — Books → Tax Preview (Freelancers MVP) <span class="pill">100% Free / No Backend</span></h1>
+      <!-- paste your Google Form URL in href below -->
+      <a class="btn btn-accent" href="https://forms.gle/REPLACE_ME" target="_blank" rel="noopener">Join the waitlist</a>
+      <a class="btn" href="fincore-sample.csv" download>CSV template</a>
+    </div>
   </header>
 
   <main class="container grid cols-2">
+    <!-- LEFT COLUMN -->
     <section class="card">
       <h2>1) Add Transactions</h2>
-      <p class="note">Simple mode: select Income or Expense. We auto-handle the accounting in the background.</p>
+      <p class="note">Simple mode: choose Income or Expense. We do the accounting behind the scenes.</p>
+
       <div class="row" aria-label="Add Transaction">
         <div>
           <label for="date">Date</label>
-          <input type="date" id="date">
+          <input type="date" id="date" placeholder="yyyy-mm-dd">
         </div>
         <div>
           <label for="type">Type</label>
@@ -88,47 +92,58 @@
         </div>
       </div>
 
-<div class="toolbar" style="margin-top:12px;">
-  <button class="btn-accent" onclick="loadDemo()">Load Demo Data</button>
-  <button onclick="exportJson()">Export JSON</button>
-  <label for="importFileJson" class="btn-accent" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import JSON</label>
-  <input id="importFileJson" type="file" accept="application/json" class="hidden" onchange="importJson(this.files[0])" />
-  <label for="importFileCsv" class="btn" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import CSV</label>
-  <input id="importFileCsv" type="file" accept=".csv,text/csv" class="hidden" onchange="importCsv(this.files[0])" />
-  <button class="btn-danger" onclick="resetAll()">Reset</button>
-</div>
-<p class="note" style="margin-top:8px;">
-  CSV columns accepted (case-insensitive):
-  <code class="small">date</code>,
-  <code class="small">type</code> (Income/Expense),
-  <code class="small">account</code>,
-  <code class="small">amount</code>,
-  <code class="small">description</code>.
-  Dates like <code class="small">2025-03-18</code>, <code class="small">03/18/2025</code>, or <code class="small">18-03-2025</code> are OK.
-</p>
+      <div class="toolbar" style="margin-top:12px;">
+        <button class="btn-accent" onclick="loadDemo()">Load Demo Data</button>
+        <button onclick="exportJson()">Export JSON</button>
 
+        <label for="importFileJson" class="btn-accent" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import JSON</label>
+        <input id="importFileJson" type="file" accept="application/json" class="hidden" onchange="importJson(this.files[0])" />
+
+        <label for="importFileCsv" class="btn" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import CSV</label>
+        <input id="importFileCsv" type="file" accept=".csv,text/csv" class="hidden" onchange="importCsv(this.files[0])" />
+
+        <button class="btn-danger" onclick="resetAll()">Reset</button>
+      </div>
+
+      <p class="note" style="margin-top:8px;">
+        CSV columns accepted (case-insensitive):
+        <code class="small">date</code>,
+        <code class="small">type</code> (Income/Expense),
+        <code class="small">account</code>,
+        <code class="small">amount</code>,
+        <code class="small">description</code>.
+        Dates like <code class="small">2025-03-18</code>, <code class="small">03/18/2025</code>, or <code class="small">18-03-2025</code> are OK.
+      </p>
+
+      <div style="margin-top:14px; overflow:auto;">
+        <table id="txTable" aria-label="Transactions">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Account</th>
+              <th>Description</th>
+              <th class="right">Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN -->
     <section class="card">
       <h2>2) Profit &amp; Loss</h2>
       <div class="totals">
-        <div class="kpi">
-          <div class="label">Revenue (Gross Receipts)</div>
-          <div class="value" id="revTotal">$0.00</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Total Expenses</div>
-          <div class="value" id="expTotal">$0.00</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Net Profit (Sched C Line 31 ≈)</div>
-          <div class="value" id="netProfit">$0.00</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Meals (raw)</div>
-          <div class="value" id="mealsRaw">$0.00</div>
-        </div>
+        <div class="kpi"><div class="label">Revenue (Gross Receipts)</div><div class="value" id="revTotal">$0.00</div></div>
+        <div class="kpi"><div class="label">Total Expenses</div><div class="value" id="expTotal">$0.00</div></div>
+        <div class="kpi"><div class="label">Net Profit (Sched C Line 31 ≈)</div><div class="value" id="netProfit">$0.00</div></div>
+        <div class="kpi"><div class="label">Meals (raw)</div><div class="value" id="mealsRaw">$0.00</div></div>
       </div>
 
       <h2 style="margin-top:16px;">3) Tax Preview — Schedule C (MVP)</h2>
+
       <div class="card" style="background:#0f1630; border-color:#28305b; margin-bottom:10px;">
         <div class="row" style="grid-template-columns: 1fr 140px;">
           <div>
@@ -159,277 +174,185 @@
     </section>
   </main>
 
-  <footer>
-    <small class="muted">FinCoreApp — Local-only demo. Your data is stored in your browser (no servers).</small>
-  </footer>
+  <footer><small class="muted">FinCoreApp — Local-only demo. Your data is stored in your browser (no servers).</small></footer>
 
-<script>
-(function(){
-  const STORAGE_KEY = 'fincore_lite_v1';
+  <script>
+  (function(){
+    const STORAGE_KEY = 'fincore_lite_v1';
+    const incomeAccounts = ['Sales'];
+    const expenseAccounts = ['Meals','Supplies','Software','Rent','Utilities','Other Expense'];
+    let state = { txns: [] }; // {id,date,type,account,amount,desc}
 
-  const incomeAccounts = ['Sales'];
-  const expenseAccounts = ['Meals', 'Supplies', 'Software', 'Rent', 'Utilities', 'Other Expense'];
+    // storage
+    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    function load(){ try{ const r = localStorage.getItem(STORAGE_KEY); if(r) state = JSON.parse(r)||state; }catch(e){} }
 
-  let state = {
-    txns: [] // {id, date, type:'INCOME'|'EXPENSE', account, amount, desc}
-  };
+    // helpers
+    const fmt = n => (n||0).toLocaleString(undefined,{style:'currency',currency:'USD'});
+    const round2 = n => Math.round(n*100)/100;
 
-  // === storage ===
-  function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-  function load() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) { try { state = JSON.parse(raw) || state; } catch(e){ console.warn('Bad state, resetting'); } }
-  }
-
-  // === helpers ===
-  function fmt(n){ return (n||0).toLocaleString(undefined,{style:'currency',currency:'USD'}); }
-  function round2(n){ return Math.round(n*100)/100; }
-
-  function updateAccountOptions(){
-    const type = document.getElementById('type').value;
-    const sel = document.getElementById('account');
-    sel.innerHTML='';
-    const list = type === 'INCOME' ? incomeAccounts : expenseAccounts;
-    for (const a of list) {
-      const opt = document.createElement('option');
-      opt.value=a; opt.textContent=a;
-      sel.appendChild(opt);
+    function updateAccountOptions(){
+      const type = document.getElementById('type').value;
+      const sel = document.getElementById('account'); sel.innerHTML='';
+      (type==='INCOME'?incomeAccounts:expenseAccounts).forEach(a=>{
+        const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o);
+      });
     }
-  }
 
-  function addTxn(){
-    const date = document.getElementById('date').value;
-    const type = document.getElementById('type').value;
-    const account = document.getElementById('account').value;
-    const amountStr = document.getElementById('amount').value;
-    const desc = document.getElementById('desc').value.trim();
-    const amount = parseFloat(amountStr);
-
-    if (!date) return alert('Please choose a date.');
-    if (!amountStr || isNaN(amount) || amount <= 0) return alert('Enter a positive amount.');
-    if (!account) return alert('Pick an account.');
-
-    state.txns.push({ id: crypto.randomUUID(), date, type, account, amount: round2(amount), desc });
-    save(); clearForm(); render();
-  }
-
-  function delTxn(id){
-    state.txns = state.txns.filter(t=>t.id!==id);
-    save(); render();
-  }
-
-  function clearForm(){
-    document.getElementById('date').value = '';
-    document.getElementById('amount').value = '';
-    document.getElementById('desc').value = '';
-    document.getElementById('type').value = 'EXPENSE';
-    updateAccountOptions();
-  }
-
-  function exportJson(){
-    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'fincore-demo.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  async function importJson(file){
-    try{
-      const text = await file.text();
-      const obj = JSON.parse(text);
-      if (!obj || !Array.isArray(obj.txns)) throw new Error('Invalid file');
-      state = obj; save(); render();
-    }catch(e){
-      alert('Could not import file.');
-    } finally {
-      document.getElementById('importFileJson').value = '';
+    function addTxn(){
+      const date = document.getElementById('date').value;
+      const type = document.getElementById('type').value;
+      const account = document.getElementById('account').value;
+      const amountStr = document.getElementById('amount').value;
+      const desc = document.getElementById('desc').value.trim();
+      const amount = parseFloat(amountStr);
+      if (!date) return alert('Please choose a date.');
+      if (!amountStr || isNaN(amount) || amount<=0) return alert('Enter a positive amount.');
+      if (!account) return alert('Pick an account.');
+      state.txns.push({ id:crypto.randomUUID(), date, type, account, amount:round2(amount), desc });
+      save(); clearForm(); render();
     }
-  }
 
-  // === CSV import ===
-  async function importCsv(file){
-    try{
-      const text = await file.text();
-      const rows = parseCsv(text);
-      if (!rows.length) throw new Error('No rows found');
+    function delTxn(id){ state.txns = state.txns.filter(t=>t.id!==id); save(); render(); }
+    function clearForm(){ document.getElementById('date').value=''; document.getElementById('amount').value=''; document.getElementById('desc').value=''; document.getElementById('type').value='EXPENSE'; updateAccountOptions(); }
 
-      // header
-      const header = rows[0].map(h => h.trim().toLowerCase());
-      const idx = {
-        date: header.indexOf('date'),
-        type: header.indexOf('type'),
-        account: header.indexOf('account'),
-        amount: header.indexOf('amount'),
-        desc: header.indexOf('description') >= 0 ? header.indexOf('description') : header.indexOf('desc')
-      };
-      if (idx.date < 0 || idx.amount < 0) throw new Error('CSV needs at least "date" and "amount" columns');
+    function exportJson(){
+      const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='fincore-demo.json'; a.click(); URL.revokeObjectURL(a.href);
+    }
 
-      const toAdd = [];
-      for (let r = 1; r < rows.length; r++){
-        const row = rows[r];
-        if (!row || row.length === 0 || row.every(c => !c || !String(c).trim())) continue;
+    async function importJson(file){
+      try{
+        const obj = JSON.parse(await file.text());
+        if (!obj || !Array.isArray(obj.txns)) throw new Error();
+        state = obj; save(); render();
+      }catch{ alert('Could not import file.'); }
+      finally{ document.getElementById('importFileJson').value=''; }
+    }
 
-        const rawDate = (row[idx.date]||'').trim();
-        const normDate = normalizeDate(rawDate);
-        if (!normDate) continue;
+    // CSV import
+    async function importCsv(file){
+      try{
+        const rows = parseCsv(await file.text());
+        if (!rows.length) throw new Error('No rows');
+        const header = rows[0].map(h=>h.trim().toLowerCase());
+        const idx = {
+          date: header.indexOf('date'),
+          type: header.indexOf('type'),
+          account: header.indexOf('account'),
+          amount: header.indexOf('amount'),
+          desc: header.indexOf('description')>=0?header.indexOf('description'):header.indexOf('desc')
+        };
+        if (idx.date<0 || idx.amount<0) throw new Error('Missing headers');
 
-        let rawAmount = String(row[idx.amount]||'').replace(/[$,]/g,'');
-        if (!rawAmount) continue;
-        let amount = parseFloat(rawAmount);
-        if (isNaN(amount)) continue;
-
-        let rawType = idx.type >= 0 ? String(row[idx.type]||'').trim().toUpperCase() : '';
-        let type;
-        if (rawType.startsWith('I')) type = 'INCOME';
-        else if (rawType.startsWith('E')) type = 'EXPENSE';
-        else type = amount >= 0 ? 'INCOME' : 'EXPENSE';
-        amount = Math.abs(amount);
-
-        let account = idx.account >= 0 ? String(row[idx.account]||'').trim() : '';
-        if (!account){ account = (type === 'INCOME') ? 'Sales' : 'Other Expense'; }
-        if (type === 'EXPENSE' && !expenseAccounts.includes(account)) account = 'Other Expense';
-        if (type === 'INCOME' && !incomeAccounts.includes(account)) account = 'Sales';
-
-        const desc = idx.desc >= 0 ? String(row[idx.desc]||'').trim() : '';
-        toAdd.push({ id: crypto.randomUUID(), date: normDate, type, account, amount: round2(amount), desc });
+        const toAdd=[];
+        for (let r=1;r<rows.length;r++){
+          const row = rows[r]; if(!row || row.every(c=>!String(c||'').trim())) continue;
+          const normDate = normalizeDate(String(row[idx.date]||'').trim()); if(!normDate) continue;
+          let amt = parseFloat(String(row[idx.amount]||'').replace(/[$,]/g,'')); if(isNaN(amt)) continue;
+          let rawType = idx.type>=0? String(row[idx.type]||'').trim().toUpperCase() : '';
+          let type = rawType.startsWith('I')?'INCOME':rawType.startsWith('E')?'EXPENSE':(amt>=0?'INCOME':'EXPENSE');
+          amt = Math.abs(amt);
+          let account = idx.account>=0? String(row[idx.account]||'').trim() : '';
+          if(!account) account = (type==='INCOME')?'Sales':'Other Expense';
+          if(type==='EXPENSE' && !expenseAccounts.includes(account)) account='Other Expense';
+          if(type==='INCOME' && !incomeAccounts.includes(account)) account='Sales';
+          const desc = idx.desc>=0 ? String(row[idx.desc]||'').trim() : '';
+          toAdd.push({ id:crypto.randomUUID(), date:normDate, type, account, amount:round2(amt), desc });
+        }
+        if (!toAdd.length) throw new Error('No valid rows');
+        state.txns = state.txns.concat(toAdd); save(); render(); alert(`Imported ${toAdd.length} transactions from CSV.`);
+      }catch(e){
+        console.error(e); alert('Could not import CSV. Please use the template.');
+      }finally{
+        document.getElementById('importFileCsv').value='';
       }
-
-      if (!toAdd.length) throw new Error('No valid rows after parsing.');
-      state.txns = state.txns.concat(toAdd);
-      save(); render();
-      alert(`Imported ${toAdd.length} transactions from CSV.`);
-    }catch(e){
-      console.error(e);
-      alert('Could not import CSV. Please use the template.');
-    } finally {
-      document.getElementById('importFileCsv').value = '';
     }
-  }
 
-  function parseCsv(text){
-    const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l => l.trim().length>0);
-    const out = [];
-    for (const line of lines){
-      const row = [];
-      const re = /("([^"]*(?:""[^"]*)*)"|[^,]+)/g;
-      let m;
-      while ((m = re.exec(line))){
-        let val = m[2] !== undefined ? m[2].replace(/""/g,'"') : m[1];
-        row.push(String(val).trim());
+    function parseCsv(text){
+      const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l=>l.trim().length>0);
+      const out=[]; for (const line of lines){
+        const row=[]; const re=/"([^"]*(?:""[^"]*)*)"|([^,]+)/g; let m;
+        while((m=re.exec(line))){ row.push(String(m[1]!==undefined? m[1].replace(/""/g,'"') : m[2]).trim()); }
+        out.push(row);
+      } return out;
+    }
+
+    function normalizeDate(s){
+      if(!s) return null;
+      if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;                       // YYYY-MM-DD
+      if(/^\d{2}[\/-]\d{2}[\/-]\d{4}$/.test(s)){                         // DD-MM-YYYY or DD/MM/YYYY
+        const [a,b,c]=s.split(/[\/-]/); const dd=+a,mm=+b,yy=+c;
+        if(mm>=1&&mm<=12&&dd>=1&&dd<=31) return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
       }
-      out.push(row);
-    }
-    return out;
-  }
-
-  function normalizeDate(s){
-    if (!s) return null;
-    s = s.trim();
-    // YYYY-MM-DD
-    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-    // DD-MM-YYYY or DD/MM/YYYY
-    if (/^\d{2}[\/-]\d{2}[\/-]\d{4}$/.test(s)){
-      const [a,b,c] = s.split(/[\/-]/);
-      const dd = parseInt(a,10), mm = parseInt(b,10), yy = parseInt(c,10);
-      if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
-    }
-    // MM/DD/YYYY
-    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s)){
-      const [m,d,y] = s.split('/').map(x=>parseInt(x,10));
-      if (m>=1 && m<=12 && d>=1 && d<=31) return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    }
-    // Fallback
-    const t = new Date(s);
-    if (!isNaN(t.getTime())){
-      const y = t.getFullYear(), m = t.getMonth()+1, d = t.getDate();
-      return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    }
-    return null;
-  }
-
-  function resetAll(){
-    if (!confirm('Reset all data? This only clears your browser storage.')) return;
-    state = { txns: [] };
-    save(); render();
-  }
-
-  function loadDemo(){
-    if (state.txns.length && !confirm('Replace existing data with demo dataset?')) return;
-    const today = new Date(); const y = today.getFullYear();
-    state.txns = [
-      {id:crypto.randomUUID(), date:`${y}-01-10`, type:'INCOME', account:'Sales', amount: 2500, desc:'Website project deposit'},
-      {id:crypto.randomUUID(), date:`${y}-02-05`, type:'INCOME', account:'Sales', amount: 3200, desc:'Freelance dev milestone'},
-      {id:crypto.randomUUID(), date:`${y}-03-18`, type:'INCOME', account:'Sales', amount: 1800, desc:'Design sprint'},
-      {id:crypto.randomUUID(), date:`${y}-01-12`, type:'EXPENSE', account:'Meals', amount: 48.50, desc:'Client lunch (2 pax)'},
-      {id:crypto.randomUUID(), date:`${y}-01-20`, type:'EXPENSE', account:'Software', amount: 29.00, desc:'GitHub subscription'},
-      {id:crypto.randomUUID(), date:`${y}-02-02`, type:'EXPENSE', account:'Supplies', amount: 86.20, desc:'Printer ink & paper'},
-      {id:crypto.randomUUID(), date:`${y}-02-14`, type:'EXPENSE', account:'Rent', amount: 700.00, desc:'Co-working desk'},
-      {id:crypto.randomUUID(), date:`${y}-03-02`, type:'EXPENSE', account:'Utilities', amount: 60.00, desc:'Phone bill'},
-      {id:crypto.randomUUID(), date:`${y}-03-22`, type:'EXPENSE', account:'Meals', amount: 36.75, desc:'Coffee & pastries w/ client'}
-    ];
-    save(); render();
-  }
-
-  function compute(){
-    const rev = state.txns.filter(t=>t.type==='INCOME').reduce((s,t)=>s+t.amount,0);
-    const exp = state.txns.filter(t=>t.type==='EXPENSE').reduce((s,t)=>s+t.amount,0);
-    const net = rev - exp;
-    const mealsRaw = state.txns.filter(t=>t.type==='EXPENSE' && t.account==='Meals').reduce((s,t)=>s+t.amount,0);
-    const meals50 = Math.min(mealsRaw * 0.5, 1e12);
-
-    const l1List = state.txns.filter(t=>t.type==='INCOME').map(t => `${t.date} • ${t.desc||'Income'} • ${fmt(t.amount)}`);
-    const mealsList = state.txns.filter(t=>t.type==='EXPENSE' && t.account==='Meals').map(t => `${t.date} • ${t.desc||'Meal'} • ${fmt(t.amount)}`);
-
-    return { rev, exp, net, mealsRaw, meals50, l1List, mealsList };
-  }
-
-  function render(){
-    const tbody = document.querySelector('#txTable tbody');
-    tbody.innerHTML='';
-    const sorted = [...state.txns].sort((a,b)=> (a.date<b.date?1:-1));
-    for (const t of sorted){
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${t.date}</td>
-        <td class="muted">${t.type}</td>
-        <td>${t.account}</td>
-        <td>${t.desc ? t.desc.replace(/</g,'&lt;') : ''}</td>
-        <td class="num">${fmt(t.amount)}</td>
-        <td class="right"><button class="btn-danger" title="Delete" aria-label="Delete" onclick="delTxn('${t.id}')">Delete</button></td>
-      `;
-      tbody.appendChild(tr);
+      if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s)){                           // MM/DD/YYYY
+        const [m,d,y]=s.split('/').map(x=>+x); if(m>=1&&m<=12&&d>=1&&d<=31) return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      }
+      const t=new Date(s); if(!isNaN(t.getTime())){ const y=t.getFullYear(),m=t.getMonth()+1,d=t.getDate(); return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+      return null;
     }
 
-    const {rev,exp,net,mealsRaw,meals50, l1List, mealsList} = compute();
-    document.getElementById('revTotal').textContent = fmt(rev);
-    document.getElementById('expTotal').textContent = fmt(exp);
-    document.getElementById('netProfit').textContent = fmt(net);
-    document.getElementById('mealsRaw').textContent = fmt(mealsRaw);
+    function resetAll(){ if(!confirm('Reset all data? This only clears your browser storage.')) return; state={txns:[]}; save(); render(); }
 
-    document.getElementById('scL1').textContent = fmt(rev);
-    document.getElementById('scMeals50').textContent = fmt(meals50);
+    function loadDemo(){
+      if(state.txns.length && !confirm('Replace existing data with demo dataset?')) return;
+      const y = new Date().getFullYear();
+      state.txns = [
+        {id:crypto.randomUUID(), date:`${y}-01-10`, type:'INCOME', account:'Sales', amount:2500, desc:'Website project deposit'},
+        {id:crypto.randomUUID(), date:`${y}-02-05`, type:'INCOME', account:'Sales', amount:3200, desc:'Freelance dev milestone'},
+        {id:crypto.randomUUID(), date:`${y}-03-18`, type:'INCOME', account:'Sales', amount:1800, desc:'Design sprint'},
+        {id:crypto.randomUUID(), date:`${y}-01-12`, type:'EXPENSE', account:'Meals', amount:48.50, desc:'Client lunch (2 pax)'},
+        {id:crypto.randomUUID(), date:`${y}-01-20`, type:'EXPENSE', account:'Software', amount:29.00, desc:'GitHub subscription'},
+        {id:crypto.randomUUID(), date:`${y}-02-02`, type:'EXPENSE', account:'Supplies', amount:86.20, desc:'Printer ink & paper'},
+        {id:crypto.randomUUID(), date:`${y}-02-14`, type:'EXPENSE', account:'Rent', amount:700.00, desc:'Co-working desk'},
+        {id:crypto.randomUUID(), date:`${y}-03-02`, type:'EXPENSE', account:'Utilities', amount:60.00, desc:'Phone bill'},
+        {id:crypto.randomUUID(), date:`${y}-03-22`, type:'EXPENSE', account:'Meals', amount:36.75, desc:'Coffee & pastries w/ client'}
+      ]; save(); render();
+    }
 
-    document.getElementById('explainL1').innerHTML = l1List.length ? '<ul style="margin:8px 0 0 16px;">'+ l1List.map(x=>`<li>${x}</li>`).join('') +'</ul>' : '<span class="note">No income yet.</span>';
-    document.getElementById('explainMeals').innerHTML = mealsList.length ? '<ul style="margin:8px 0 0 16px;">'+ mealsList.map(x=>`<li>${x}</li>`).join('') +'</ul>' : '<span class="note">No meals yet.</span>';
-  }
+    function compute(){
+      const rev = state.txns.filter(t=>t.type==='INCOME').reduce((s,t)=>s+t.amount,0);
+      const exp = state.txns.filter(t=>t.type==='EXPENSE').reduce((s,t)=>s+t.amount,0);
+      const net = rev-exp;
+      const mealsRaw = state.txns.filter(t=>t.type==='EXPENSE'&&t.account==='Meals').reduce((s,t)=>s+t.amount,0);
+      const meals50 = Math.min(mealsRaw*0.5,1e12);
+      const l1List = state.txns.filter(t=>t.type==='INCOME').map(t=>`${t.date} • ${t.desc||'Income'} • ${fmt(t.amount)}`);
+      const mealsList = state.txns.filter(t=>t.type==='EXPENSE'&&t.account==='Meals').map(t=>`${t.date} • ${t.desc||'Meal'} • ${fmt(t.amount)}`);
+      return {rev,exp,net,mealsRaw,meals50,l1List,mealsList};
+    }
 
-  // expose
-  window.updateAccountOptions = updateAccountOptions;
-  window.addTxn = addTxn;
-  window.delTxn = delTxn;
-  window.exportJson = exportJson;
-  window.importJson = importJson;
-  window.importCsv = importCsv;
-  window.resetAll = resetAll;
-  window.loadDemo = loadDemo;
+    function render(){
+      const tbody=document.querySelector('#txTable tbody'); tbody.innerHTML='';
+      [...state.txns].sort((a,b)=>(a.date<b.date?1:-1)).forEach(t=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${t.date}</td><td class="muted">${t.type}</td><td>${t.account}</td><td>${t.desc?t.desc.replace(/</g,'&lt;'):''}</td><td class="num">${fmt(t.amount)}</td><td class="right"><button class="btn-danger" onclick="delTxn('${t.id}')">Delete</button></td>`;
+        tbody.appendChild(tr);
+      });
 
-  // init
-  load();
-  updateAccountOptions();
-  render();
-})();</script>
+      const {rev,exp,net,mealsRaw,meals50,l1List,mealsList}=compute();
+      document.getElementById('revTotal').textContent=fmt(rev);
+      document.getElementById('expTotal').textContent=fmt(exp);
+      document.getElementById('netProfit').textContent=fmt(net);
+      document.getElementById('mealsRaw').textContent=fmt(mealsRaw);
+      document.getElementById('scL1').textContent=fmt(rev);
+      document.getElementById('scMeals50').textContent=fmt(meals50);
+      document.getElementById('explainL1').innerHTML = l1List.length? '<ul style="margin:8px 0 0 16px;">'+l1List.map(x=>`<li>${x}</li>`).join('')+'</ul>' : '<span class="note">No income yet.</span>';
+      document.getElementById('explainMeals').innerHTML = mealsList.length? '<ul style="margin:8px 0 0 16px;">'+mealsList.map(x=>`<li>${x}</li>`).join('')+'</ul>' : '<span class="note">No meals yet.</span>';
+    }
 
+    // expose
+    window.updateAccountOptions = updateAccountOptions;
+    window.addTxn = addTxn;
+    window.delTxn = delTxn;
+    window.exportJson = exportJson;
+    window.importJson = importJson;
+    window.importCsv = importCsv;
+    window.resetAll = resetAll;
+    window.loadDemo = loadDemo;
+
+    // init
+    load(); updateAccountOptions(); render();
+  })();
+  </script>
 </body>
 </html>
