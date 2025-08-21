@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FinCore Lite — Books → Tax Preview (MVP)</title>
+  <style>
+    :root { --bg:#0b1020; --card:#131a33; --ink:#e8ebff; --muted:#aab1d6; --accent:#8fd3ff; --ok:#56f59a; --warn:#ffd166; --bad:#ff6b6b; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; background: var(--bg); color: var(--ink); }
+    header { padding: 24px 20px; border-bottom: 1px solid #1d2549; position: sticky; top:0; backdrop-filter: blur(6px); background: #0b1020cc; z-index: 2;}
+    h1 { margin:0; font-size: 20px; letter-spacing: 0.3px;}
+    .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .grid { display: grid; gap: 16px; }
+    .cols-2 { grid-template-columns: 1.2fr 1fr; }
+    .card { background: var(--card); border: 1px solid #1d2549; border-radius: 14px; padding: 16px; }
+    .card h2 { margin: 0 0 10px; font-size: 18px; }
+    label { font-size: 12px; color: var(--muted); display:block; margin-bottom: 6px; }
+    input, select, button, textarea { font: inherit; color: var(--ink); }
+    input[type="date"], input[type="number"], input[type="text"], select { width: 100%; padding: 10px; background: #0f1630; border: 1px solid #28305b; border-radius: 10px; }
+    input[type="number"] { text-align: right; }
+    button { background: #1a2550; border: 1px solid #2a3b7a; padding: 10px 14px; border-radius: 10px; cursor:pointer; }
+    button:hover { border-color:#3e58b5; }
+    .btn-accent { background: #12314b; border-color: #245f89; }
+    .btn-danger { background:#3a1420; border-color:#78354b; }
+    .row { display:grid; grid-template-columns: repeat(5,1fr) 120px; gap:10px; align-items:end; }
+    .row > div { }
+    .toolbar { display:flex; gap:10px; flex-wrap: wrap; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid #202a55; font-size: 14px; }
+    th { text-align: left; color: var(--muted); font-weight: 600; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .pill { display:inline-block; padding:3px 8px; border:1px solid #2a3b7a; border-radius:999px; color: var(--accent); font-size:12px; }
+    .muted { color: var(--muted); }
+    details { background:#0f1630; border:1px solid #28305b; border-radius:10px; padding:8px 10px; }
+    details > summary { cursor:pointer; color: var(--accent); }
+    .totals { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .kpi { background:#0f1630; border:1px solid #28305b; border-radius:12px; padding:12px; }
+    .kpi .label { color: var(--muted); font-size:12px; }
+    .kpi .value { font-size: 20px; margin-top:6px; font-variant-numeric: tabular-nums; }
+    footer { padding: 20px; text-align:center; color: var(--muted); }
+    .right { text-align:right; }
+    .success { color: var(--ok); }
+    .warning { color: var(--warn); }
+    .danger { color: var(--bad); }
+    .hidden { display:none; }
+    .note { font-size:12px; color: var(--muted); }
+    code.small { font-size:12px; background:#0f1630; border:1px solid #28305b; padding:2px 6px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <h1>FinCore Lite — Books → Tax Preview (Freelancers MVP) <span class="pill">100% Free / No Backend</span></h1>
+  </header>
+
+  <main class="container grid cols-2">
+    <section class="card">
+      <h2>1) Add Transactions</h2>
+      <p class="note">Simple mode: select Income or Expense. We auto-handle the accounting in the background.</p>
+      <div class="row" aria-label="Add Transaction">
+        <div>
+          <label for="date">Date</label>
+          <input type="date" id="date">
+        </div>
+        <div>
+          <label for="type">Type</label>
+          <select id="type" onchange="updateAccountOptions()">
+            <option value="INCOME">Income</option>
+            <option value="EXPENSE" selected>Expense</option>
+          </select>
+        </div>
+        <div>
+          <label for="account">Account</label>
+          <select id="account"></select>
+        </div>
+        <div>
+          <label for="amount">Amount (USD)</label>
+          <input type="number" id="amount" step="0.01" placeholder="0.00" inputmode="decimal">
+        </div>
+        <div>
+          <label for="desc">Description</label>
+          <input type="text" id="desc" placeholder="e.g., Lunch with client">
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button onclick="addTxn()">Add</button>
+        </div>
+      </div>
+
+      <div class="toolbar" style="margin-top:12px;">
+        <button class="btn-accent" onclick="loadDemo()">Load Demo Data</button>
+        <button onclick="exportJson()">Export JSON</button>
+        <label for="importFile" class="btn-accent" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import JSON</label>
+        <input id="importFile" type="file" accept="application/json" class="hidden" onchange="importJson(this.files[0])" />
+        <button class="btn-danger" onclick="resetAll()">Reset</button>
+      </div>
+
+      <div style="margin-top:14px; overflow:auto;">
+        <table id="txTable" aria-label="Transactions">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Account</th>
+              <th>Description</th>
+              <th class="right">Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2) Profit &amp; Loss</h2>
+      <div class="totals">
+        <div class="kpi">
+          <div class="label">Revenue (Gross Receipts)</div>
+          <div class="value" id="revTotal">$0.00</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Total Expenses</div>
+          <div class="value" id="expTotal">$0.00</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Net Profit (Sched C Line 31 ≈)</div>
+          <div class="value" id="netProfit">$0.00</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Meals (raw)</div>
+          <div class="value" id="mealsRaw">$0.00</div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:16px;">3) Tax Preview — Schedule C (MVP)</h2>
+      <div class="card" style="background:#0f1630; border-color:#28305b; margin-bottom:10px;">
+        <div class="row" style="grid-template-columns: 1fr 140px;">
+          <div>
+            <div class="label">Line 1 — Gross receipts or sales</div>
+            <details style="margin-top:6px;">
+              <summary>Why?</summary>
+              <div id="explainL1" class="note">Shows all Income transactions.</div>
+            </details>
+          </div>
+          <div class="right"><strong id="scL1">$0.00</strong></div>
+        </div>
+      </div>
+
+      <div class="card" style="background:#0f1630; border-color:#28305b; margin-bottom:10px;">
+        <div class="row" style="grid-template-columns: 1fr 140px;">
+          <div>
+            <div class="label">Line 24b — Meals (50% deductible)</div>
+            <details style="margin-top:6px;">
+              <summary>Why?</summary>
+              <div id="explainMeals" class="note">50% of 'Meals' expenses only.</div>
+            </details>
+          </div>
+          <div class="right"><strong id="scMeals50">$0.00</strong></div>
+        </div>
+      </div>
+
+      <p class="note">This is a simplified preview for learning/demo. For filing, more lines and rules are needed.</p>
+    </section>
+  </main>
+
+  <footer>
+    <small class="muted">FinCoreApp — Local-only demo. Your data is stored in your browser (no servers).</small>
+  </footer>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'fincore_lite_v1';
+
+  const incomeAccounts = ['Sales'];
+  const expenseAccounts = ['Meals', 'Supplies', 'Software', 'Rent', 'Utilities', 'Other Expense'];
+
+  let state = {
+    txns: [] // {id, date, type:'INCOME'|'EXPENSE', account, amount, desc}
+  };
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function load() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      try { state = JSON.parse(raw) || state; } catch(e){ console.warn('Bad state, resetting'); }
+    }
+  }
+
+  function fmt(n){ return (n||0).toLocaleString(undefined,{style:'currency',currency:'USD'}); }
+
+  function updateAccountOptions(){
+    const type = document.getElementById('type').value;
+    const sel = document.getElementById('account');
+    sel.innerHTML='';
+    const list = type === 'INCOME' ? incomeAccounts : expenseAccounts;
+    for (const a of list) {
+      const opt = document.createElement('option');
+      opt.value=a; opt.textContent=a;
+      sel.appendChild(opt);
+    }
+  }
+
+  function addTxn(){
+    const date = document.getElementById('date').value;
+    const type = document.getElementById('type').value;
+    const account = document.getElementById('account').value;
+    const amountStr = document.getElementById('amount').value;
+    const desc = document.getElementById('desc').value.trim();
+    const amount = parseFloat(amountStr);
+
+    if (!date) return alert('Please choose a date.');
+    if (!amountStr || isNaN(amount) || amount <= 0) return alert('Enter a positive amount.');
+    if (!account) return alert('Pick an account.');
+
+    state.txns.push({
+      id: crypto.randomUUID(),
+      date, type, account, amount: Math.round(amount*100)/100, desc
+    });
+    save();
+    clearForm();
+    render();
+  }
+
+  function delTxn(id){
+    state.txns = state.txns.filter(t=>t.id!==id);
+    save();
+    render();
+  }
+
+  function clearForm(){
+    document.getElementById('date').value = '';
+    document.getElementById('amount').value = '';
+    document.getElementById('desc').value = '';
+    document.getElementById('type').value = 'EXPENSE';
+    updateAccountOptions();
+  }
+
+  function exportJson(){
+    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'fincore-demo.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  async function importJson(file){
+    try{
+      const text = await file.text();
+      const obj = JSON.parse(text);
+      if (!obj || !Array.isArray(obj.txns)) throw new Error('Invalid file');
+      state = obj;
+      save(); render();
+    }catch(e){
+      alert('Could not import file.');
+    } finally {
+      document.getElementById('importFile').value = '';
+    }
+  }
+
+  function resetAll(){
+    if (!confirm('Reset all data? This only clears your browser storage.')) return;
+    state = { txns: [] };
+    save(); render();
+  }
+
+  function loadDemo(){
+    if (state.txns.length && !confirm('Replace existing data with demo dataset?')) return;
+    const today = new Date();
+    const y = today.getFullYear();
+    state.txns = [
+      // Income
+      {id:crypto.randomUUID(), date:`${y}-01-10`, type:'INCOME', account:'Sales', amount: 2500, desc:'Website project deposit'},
+      {id:crypto.randomUUID(), date:`${y}-02-05`, type:'INCOME', account:'Sales', amount: 3200, desc:'Freelance dev milestone'},
+      {id:crypto.randomUUID(), date:`${y}-03-18`, type:'INCOME', account:'Sales', amount: 1800, desc:'Design sprint'},
+      // Expenses
+      {id:crypto.randomUUID(), date:`${y}-01-12`, type:'EXPENSE', account:'Meals', amount: 48.50, desc:'Client lunch (2 pax)'},
+      {id:crypto.randomUUID(), date:`${y}-01-20`, type:'EXPENSE', account:'Software', amount: 29.00, desc:'GitHub subscription'},
+      {id:crypto.randomUUID(), date:`${y}-02-02`, type:'EXPENSE', account:'Supplies', amount: 86.20, desc:'Printer ink & paper'},
+      {id:crypto.randomUUID(), date:`${y}-02-14`, type:'EXPENSE', account:'Rent', amount: 700.00, desc:'Co-working desk'},
+      {id:crypto.randomUUID(), date:`${y}-03-02`, type:'EXPENSE', account:'Utilities', amount: 60.00, desc:'Phone bill'},
+      {id:crypto.randomUUID(), date:`${y}-03-22`, type:'EXPENSE', account:'Meals', amount: 36.75, desc:'Coffee & pastries w/ client'}
+    ];
+    save(); render();
+  }
+
+  function compute(){
+    const rev = state.txns.filter(t=>t.type==='INCOME').reduce((s,t)=>s+t.amount,0);
+    const exp = state.txns.filter(t=>t.type==='EXPENSE').reduce((s,t)=>s+t.amount,0);
+    const net = rev - exp;
+    const mealsRaw = state.txns.filter(t=>t.type==='EXPENSE' && t.account==='Meals').reduce((s,t)=>s+t.amount,0);
+    const meals50 = Math.min(mealsRaw * 0.5, 1e12);
+
+    // Explanations
+    const l1List = state.txns.filter(t=>t.type==='INCOME').map(t => `${t.date} • ${t.desc||'Income'} • ${fmt(t.amount)}`);
+    const mealsList = state.txns.filter(t=>t.type==='EXPENSE' && t.account==='Meals').map(t => `${t.date} • ${t.desc||'Meal'} • ${fmt(t.amount)}`);
+
+    return { rev, exp, net, mealsRaw, meals50, l1List, mealsList };
+  }
+
+  function render(){
+    // Table
+    const tbody = document.querySelector('#txTable tbody');
+    tbody.innerHTML='';
+    const sorted = [...state.txns].sort((a,b)=> (a.date<b.date?1:-1));
+    for (const t of sorted){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${t.date}</td>
+        <td class="muted">${t.type}</td>
+        <td>${t.account}</td>
+        <td>${t.desc ? t.desc.replace(/</g,'&lt;') : ''}</td>
+        <td class="num">${fmt(t.amount)}</td>
+        <td class="right"><button class="btn-danger" title="Delete" aria-label="Delete" onclick="delTxn('${t.id}')">Delete</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    // Totals
+    const {rev,exp,net,mealsRaw,meals50, l1List, mealsList} = compute();
+    document.getElementById('revTotal').textContent = fmt(rev);
+    document.getElementById('expTotal').textContent = fmt(exp);
+    document.getElementById('netProfit').textContent = fmt(net);
+    document.getElementById('mealsRaw').textContent = fmt(mealsRaw);
+
+    // Schedule C
+    document.getElementById('scL1').textContent = fmt(rev);
+    document.getElementById('scMeals50').textContent = fmt(meals50);
+
+    // Explanations
+    document.getElementById('explainL1').innerHTML = l1List.length ? '<ul style="margin:8px 0 0 16px;">'+ l1List.map(x=>`<li>${x}</li>`).join('') +'</ul>' : '<span class="note">No income yet.</span>';
+    document.getElementById('explainMeals').innerHTML = mealsList.length ? '<ul style="margin:8px 0 0 16px;">'+ mealsList.map(x=>`<li>${x}</li>`).join('') +'</ul>' : '<span class="note">No meals yet.</span>';
+  }
+
+  // Expose some functions
+  window.updateAccountOptions = updateAccountOptions;
+  window.addTxn = addTxn;
+  window.delTxn = delTxn;
+  window.exportJson = exportJson;
+  window.importJson = importJson;
+  window.resetAll = resetAll;
+  window.loadDemo = loadDemo;
+
+  // init
+  load();
+  updateAccountOptions();
+  render();
+})();</script>
+</body>
+</html>
