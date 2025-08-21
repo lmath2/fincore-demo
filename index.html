@@ -223,6 +223,34 @@
       const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
       const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='fincore-demo.json'; a.click(); URL.revokeObjectURL(a.href);
     }
+    function exportCsv(){
+  // header
+  const header = ['date','type','account','amount','description'];
+
+  // escape cells for CSV
+  const esc = v => {
+    v = String(v ?? '');
+    return /[",\n]/.test(v) ? `"${v.replace(/"/g,'""')}"` : v;
+  };
+
+  // rows -> [MM/DD/YYYY, Income/Expense, account, 0.00, desc]
+  const rows = state.txns.map(t => [
+    isoToUs(t.date),
+    t.type === 'INCOME' ? 'Income' : 'Expense',
+    t.account,
+    (t.amount ?? 0).toFixed(2),
+    t.desc || ''
+  ]);
+
+  const csv = [header.join(','), ...rows.map(r => r.map(esc).join(','))].join('\r\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'fincore-transactions.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
 
     async function importJson(file){
       try{
@@ -344,6 +372,7 @@
     window.importCsv = importCsv;
     window.resetAll = resetAll;
     window.loadDemo = loadDemo;
+    window.exportCsv = exportCsv;
 
     // init
     load(); updateAccountOptions(); render();
