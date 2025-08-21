@@ -88,30 +88,24 @@
         </div>
       </div>
 
-      <div class="toolbar" style="margin-top:12px;">
-        <button class="btn-accent" onclick="loadDemo()">Load Demo Data</button>
-        <button onclick="exportJson()">Export JSON</button>
-        <label for="importFile" class="btn-accent" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import JSON</label>
-        <input id="importFile" type="file" accept="application/json" class="hidden" onchange="importJson(this.files[0])" />
-        <button class="btn-danger" onclick="resetAll()">Reset</button>
-      </div>
-
-      <div style="margin-top:14px; overflow:auto;">
-        <table id="txTable" aria-label="Transactions">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Account</th>
-              <th>Description</th>
-              <th class="right">Amount</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+<div class="toolbar" style="margin-top:12px;">
+  <button class="btn-accent" onclick="loadDemo()">Load Demo Data</button>
+  <button onclick="exportJson()">Export JSON</button>
+  <label for="importFileJson" class="btn-accent" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import JSON</label>
+  <input id="importFileJson" type="file" accept="application/json" class="hidden" onchange="importJson(this.files[0])" />
+  <label for="importFileCsv" class="btn" style="display:inline-block; padding:10px 14px; cursor:pointer;">Import CSV</label>
+  <input id="importFileCsv" type="file" accept=".csv,text/csv" class="hidden" onchange="importCsv(this.files[0])" />
+  <button class="btn-danger" onclick="resetAll()">Reset</button>
+</div>
+<p class="note" style="margin-top:8px;">
+  CSV columns accepted (case-insensitive):
+  <code class="small">date</code>,
+  <code class="small">type</code> (Income/Expense),
+  <code class="small">account</code>,
+  <code class="small">amount</code>,
+  <code class="small">description</code>.
+  Dates like <code class="small">2025-03-18</code>, <code class="small">03/18/2025</code>, or <code class="small">18-03-2025</code> are OK.
+</p>
 
     <section class="card">
       <h2>2) Profit &amp; Loss</h2>
@@ -180,17 +174,16 @@
     txns: [] // {id, date, type:'INCOME'|'EXPENSE', account, amount, desc}
   };
 
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
+  // === storage ===
+  function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
   function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      try { state = JSON.parse(raw) || state; } catch(e){ console.warn('Bad state, resetting'); }
-    }
+    if (raw) { try { state = JSON.parse(raw) || state; } catch(e){ console.warn('Bad state, resetting'); } }
   }
 
+  // === helpers ===
   function fmt(n){ return (n||0).toLocaleString(undefined,{style:'currency',currency:'USD'}); }
+  function round2(n){ return Math.round(n*100)/100; }
 
   function updateAccountOptions(){
     const type = document.getElementById('type').value;
@@ -216,19 +209,13 @@
     if (!amountStr || isNaN(amount) || amount <= 0) return alert('Enter a positive amount.');
     if (!account) return alert('Pick an account.');
 
-    state.txns.push({
-      id: crypto.randomUUID(),
-      date, type, account, amount: Math.round(amount*100)/100, desc
-    });
-    save();
-    clearForm();
-    render();
+    state.txns.push({ id: crypto.randomUUID(), date, type, account, amount: round2(amount), desc });
+    save(); clearForm(); render();
   }
 
   function delTxn(id){
     state.txns = state.txns.filter(t=>t.id!==id);
-    save();
-    render();
+    save(); render();
   }
 
   function clearForm(){
@@ -253,13 +240,113 @@
       const text = await file.text();
       const obj = JSON.parse(text);
       if (!obj || !Array.isArray(obj.txns)) throw new Error('Invalid file');
-      state = obj;
-      save(); render();
+      state = obj; save(); render();
     }catch(e){
       alert('Could not import file.');
     } finally {
-      document.getElementById('importFile').value = '';
+      document.getElementById('importFileJson').value = '';
     }
+  }
+
+  // === CSV import ===
+  async function importCsv(file){
+    try{
+      const text = await file.text();
+      const rows = parseCsv(text);
+      if (!rows.length) throw new Error('No rows found');
+
+      // header
+      const header = rows[0].map(h => h.trim().toLowerCase());
+      const idx = {
+        date: header.indexOf('date'),
+        type: header.indexOf('type'),
+        account: header.indexOf('account'),
+        amount: header.indexOf('amount'),
+        desc: header.indexOf('description') >= 0 ? header.indexOf('description') : header.indexOf('desc')
+      };
+      if (idx.date < 0 || idx.amount < 0) throw new Error('CSV needs at least "date" and "amount" columns');
+
+      const toAdd = [];
+      for (let r = 1; r < rows.length; r++){
+        const row = rows[r];
+        if (!row || row.length === 0 || row.every(c => !c || !String(c).trim())) continue;
+
+        const rawDate = (row[idx.date]||'').trim();
+        const normDate = normalizeDate(rawDate);
+        if (!normDate) continue;
+
+        let rawAmount = String(row[idx.amount]||'').replace(/[$,]/g,'');
+        if (!rawAmount) continue;
+        let amount = parseFloat(rawAmount);
+        if (isNaN(amount)) continue;
+
+        let rawType = idx.type >= 0 ? String(row[idx.type]||'').trim().toUpperCase() : '';
+        let type;
+        if (rawType.startsWith('I')) type = 'INCOME';
+        else if (rawType.startsWith('E')) type = 'EXPENSE';
+        else type = amount >= 0 ? 'INCOME' : 'EXPENSE';
+        amount = Math.abs(amount);
+
+        let account = idx.account >= 0 ? String(row[idx.account]||'').trim() : '';
+        if (!account){ account = (type === 'INCOME') ? 'Sales' : 'Other Expense'; }
+        if (type === 'EXPENSE' && !expenseAccounts.includes(account)) account = 'Other Expense';
+        if (type === 'INCOME' && !incomeAccounts.includes(account)) account = 'Sales';
+
+        const desc = idx.desc >= 0 ? String(row[idx.desc]||'').trim() : '';
+        toAdd.push({ id: crypto.randomUUID(), date: normDate, type, account, amount: round2(amount), desc });
+      }
+
+      if (!toAdd.length) throw new Error('No valid rows after parsing.');
+      state.txns = state.txns.concat(toAdd);
+      save(); render();
+      alert(`Imported ${toAdd.length} transactions from CSV.`);
+    }catch(e){
+      console.error(e);
+      alert('Could not import CSV. Please use the template.');
+    } finally {
+      document.getElementById('importFileCsv').value = '';
+    }
+  }
+
+  function parseCsv(text){
+    const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l => l.trim().length>0);
+    const out = [];
+    for (const line of lines){
+      const row = [];
+      const re = /("([^"]*(?:""[^"]*)*)"|[^,]+)/g;
+      let m;
+      while ((m = re.exec(line))){
+        let val = m[2] !== undefined ? m[2].replace(/""/g,'"') : m[1];
+        row.push(String(val).trim());
+      }
+      out.push(row);
+    }
+    return out;
+  }
+
+  function normalizeDate(s){
+    if (!s) return null;
+    s = s.trim();
+    // YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    // DD-MM-YYYY or DD/MM/YYYY
+    if (/^\d{2}[\/-]\d{2}[\/-]\d{4}$/.test(s)){
+      const [a,b,c] = s.split(/[\/-]/);
+      const dd = parseInt(a,10), mm = parseInt(b,10), yy = parseInt(c,10);
+      if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
+    }
+    // MM/DD/YYYY
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s)){
+      const [m,d,y] = s.split('/').map(x=>parseInt(x,10));
+      if (m>=1 && m<=12 && d>=1 && d<=31) return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+    // Fallback
+    const t = new Date(s);
+    if (!isNaN(t.getTime())){
+      const y = t.getFullYear(), m = t.getMonth()+1, d = t.getDate();
+      return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+    return null;
   }
 
   function resetAll(){
@@ -270,14 +357,11 @@
 
   function loadDemo(){
     if (state.txns.length && !confirm('Replace existing data with demo dataset?')) return;
-    const today = new Date();
-    const y = today.getFullYear();
+    const today = new Date(); const y = today.getFullYear();
     state.txns = [
-      // Income
       {id:crypto.randomUUID(), date:`${y}-01-10`, type:'INCOME', account:'Sales', amount: 2500, desc:'Website project deposit'},
       {id:crypto.randomUUID(), date:`${y}-02-05`, type:'INCOME', account:'Sales', amount: 3200, desc:'Freelance dev milestone'},
       {id:crypto.randomUUID(), date:`${y}-03-18`, type:'INCOME', account:'Sales', amount: 1800, desc:'Design sprint'},
-      // Expenses
       {id:crypto.randomUUID(), date:`${y}-01-12`, type:'EXPENSE', account:'Meals', amount: 48.50, desc:'Client lunch (2 pax)'},
       {id:crypto.randomUUID(), date:`${y}-01-20`, type:'EXPENSE', account:'Software', amount: 29.00, desc:'GitHub subscription'},
       {id:crypto.randomUUID(), date:`${y}-02-02`, type:'EXPENSE', account:'Supplies', amount: 86.20, desc:'Printer ink & paper'},
@@ -295,7 +379,6 @@
     const mealsRaw = state.txns.filter(t=>t.type==='EXPENSE' && t.account==='Meals').reduce((s,t)=>s+t.amount,0);
     const meals50 = Math.min(mealsRaw * 0.5, 1e12);
 
-    // Explanations
     const l1List = state.txns.filter(t=>t.type==='INCOME').map(t => `${t.date} • ${t.desc||'Income'} • ${fmt(t.amount)}`);
     const mealsList = state.txns.filter(t=>t.type==='EXPENSE' && t.account==='Meals').map(t => `${t.date} • ${t.desc||'Meal'} • ${fmt(t.amount)}`);
 
@@ -303,7 +386,6 @@
   }
 
   function render(){
-    // Table
     const tbody = document.querySelector('#txTable tbody');
     tbody.innerHTML='';
     const sorted = [...state.txns].sort((a,b)=> (a.date<b.date?1:-1));
@@ -320,28 +402,26 @@
       tbody.appendChild(tr);
     }
 
-    // Totals
     const {rev,exp,net,mealsRaw,meals50, l1List, mealsList} = compute();
     document.getElementById('revTotal').textContent = fmt(rev);
     document.getElementById('expTotal').textContent = fmt(exp);
     document.getElementById('netProfit').textContent = fmt(net);
     document.getElementById('mealsRaw').textContent = fmt(mealsRaw);
 
-    // Schedule C
     document.getElementById('scL1').textContent = fmt(rev);
     document.getElementById('scMeals50').textContent = fmt(meals50);
 
-    // Explanations
     document.getElementById('explainL1').innerHTML = l1List.length ? '<ul style="margin:8px 0 0 16px;">'+ l1List.map(x=>`<li>${x}</li>`).join('') +'</ul>' : '<span class="note">No income yet.</span>';
     document.getElementById('explainMeals').innerHTML = mealsList.length ? '<ul style="margin:8px 0 0 16px;">'+ mealsList.map(x=>`<li>${x}</li>`).join('') +'</ul>' : '<span class="note">No meals yet.</span>';
   }
 
-  // Expose some functions
+  // expose
   window.updateAccountOptions = updateAccountOptions;
   window.addTxn = addTxn;
   window.delTxn = delTxn;
   window.exportJson = exportJson;
   window.importJson = importJson;
+  window.importCsv = importCsv;
   window.resetAll = resetAll;
   window.loadDemo = loadDemo;
 
@@ -350,5 +430,6 @@
   updateAccountOptions();
   render();
 })();</script>
+
 </body>
 </html>
