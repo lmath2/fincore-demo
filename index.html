@@ -18,7 +18,7 @@
     .card h2 { margin:0 0 10px; font-size:18px }
     label { font-size:12px; color:var(--muted); display:block; margin-bottom:6px }
     input,select,button,textarea,a.btn { font:inherit; color:var(--ink) }
-    input[type="date"],input[type="number"],input[type="text"],select { width:100%; padding:10px; background:#0f1630; border:1px solid #28305b; border-radius:10px }
+    input[type="text"],input[type="number"],select { width:100%; padding:10px; background:#0f1630; border:1px solid #28305b; border-radius:10px }
     input[type="number"]{ text-align:right }
     button,.btn { background:#1a2550; border:1px solid #2a3b7a; padding:10px 14px; border-radius:10px; cursor:pointer; text-decoration:none; display:inline-block }
     button:hover,.btn:hover{ border-color:#3e58b5 }
@@ -50,22 +50,20 @@
   <header class="container">
     <div class="topbar">
       <h1>FinCoreApp — Books → Tax Preview (Freelancers MVP) <span class="pill">100% Free / No Backend</span></h1>
-      <!-- paste your Google Form URL in href below -->
       <a class="btn btn-accent" href="https://forms.gle/REPLACE_ME" target="_blank" rel="noopener">Join the waitlist</a>
       <a class="btn" href="fincore-sample.csv" download>CSV template</a>
     </div>
   </header>
 
   <main class="container grid cols-2">
-    <!-- LEFT COLUMN -->
+    <!-- LEFT -->
     <section class="card">
       <h2>1) Add Transactions</h2>
-      <p class="note">Simple mode: choose Income or Expense. We do the accounting behind the scenes.</p>
-
+      <p class="note">Dates must be U.S. format: <strong>MM/DD/YYYY</strong>.</p>
       <div class="row" aria-label="Add Transaction">
         <div>
-          <label for="date">Date</label>
-          <input type="date" id="date" placeholder="yyyy-mm-dd">
+          <label for="dateUs">Date (MM/DD/YYYY)</label>
+          <input type="text" id="dateUs" placeholder="MM/DD/YYYY" inputmode="numeric" pattern="\\d{1,2}/\\d{1,2}/\\d{4}">
         </div>
         <div>
           <label for="type">Type</label>
@@ -106,25 +104,19 @@
       </div>
 
       <p class="note" style="margin-top:8px;">
-        CSV columns accepted (case-insensitive):
-        <code class="small">date</code>,
+        CSV columns (case-insensitive):
+        <code class="small">date</code> (MM/DD/YYYY only),
         <code class="small">type</code> (Income/Expense),
         <code class="small">account</code>,
         <code class="small">amount</code>,
         <code class="small">description</code>.
-        Dates like <code class="small">2025-03-18</code>, <code class="small">03/18/2025</code>, or <code class="small">18-03-2025</code> are OK.
       </p>
 
       <div style="margin-top:14px; overflow:auto;">
         <table id="txTable" aria-label="Transactions">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Account</th>
-              <th>Description</th>
-              <th class="right">Amount</th>
-              <th></th>
+              <th>Date</th><th>Type</th><th>Account</th><th>Description</th><th class="right">Amount</th><th></th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -132,7 +124,7 @@
       </div>
     </section>
 
-    <!-- RIGHT COLUMN -->
+    <!-- RIGHT -->
     <section class="card">
       <h2>2) Profit &amp; Loss</h2>
       <div class="totals">
@@ -143,15 +135,11 @@
       </div>
 
       <h2 style="margin-top:16px;">3) Tax Preview — Schedule C (MVP)</h2>
-
       <div class="card" style="background:#0f1630; border-color:#28305b; margin-bottom:10px;">
         <div class="row" style="grid-template-columns: 1fr 140px;">
           <div>
             <div class="label">Line 1 — Gross receipts or sales</div>
-            <details style="margin-top:6px;">
-              <summary>Why?</summary>
-              <div id="explainL1" class="note">Shows all Income transactions.</div>
-            </details>
+            <details style="margin-top:6px;"><summary>Why?</summary><div id="explainL1" class="note">Shows all Income transactions.</div></details>
           </div>
           <div class="right"><strong id="scL1">$0.00</strong></div>
         </div>
@@ -161,10 +149,7 @@
         <div class="row" style="grid-template-columns: 1fr 140px;">
           <div>
             <div class="label">Line 24b — Meals (50% deductible)</div>
-            <details style="margin-top:6px;">
-              <summary>Why?</summary>
-              <div id="explainMeals" class="note">50% of 'Meals' expenses only.</div>
-            </details>
+            <details style="margin-top:6px;"><summary>Why?</summary><div id="explainMeals" class="note">50% of 'Meals' expenses only.</div></details>
           </div>
           <div class="right"><strong id="scMeals50">$0.00</strong></div>
         </div>
@@ -181,13 +166,28 @@
     const STORAGE_KEY = 'fincore_lite_v1';
     const incomeAccounts = ['Sales'];
     const expenseAccounts = ['Meals','Supplies','Software','Rent','Utilities','Other Expense'];
-    let state = { txns: [] }; // {id,date,type,account,amount,desc}
+    let state = { txns: [] }; // {id,dateISO,type,account,amount,desc}
+
+    // --- helpers for U.S. dates ---
+    function isUSDate(s){ return /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s); }
+    function usToIso(s){
+      if (!isUSDate(s)) return null;
+      const [m,d,y] = s.split('/').map(x=>parseInt(x,10));
+      if (m<1||m>12||d<1||d>31) return null;
+      return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+    function isoToUs(iso){
+      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+      if (!m) return iso;
+      const y=m[1], mo=m[2], d=m[3];
+      return `${mo}/${d}/${y}`;
+    }
 
     // storage
     function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
     function load(){ try{ const r = localStorage.getItem(STORAGE_KEY); if(r) state = JSON.parse(r)||state; }catch(e){} }
 
-    // helpers
+    // other helpers
     const fmt = n => (n||0).toLocaleString(undefined,{style:'currency',currency:'USD'});
     const round2 = n => Math.round(n*100)/100;
 
@@ -200,21 +200,22 @@
     }
 
     function addTxn(){
-      const date = document.getElementById('date').value;
+      const dateUs = document.getElementById('dateUs').value.trim();
+      const iso = usToIso(dateUs);
+      if (!iso) return alert('Please enter a valid U.S. date like 03/18/2025.');
       const type = document.getElementById('type').value;
       const account = document.getElementById('account').value;
       const amountStr = document.getElementById('amount').value;
       const desc = document.getElementById('desc').value.trim();
       const amount = parseFloat(amountStr);
-      if (!date) return alert('Please choose a date.');
       if (!amountStr || isNaN(amount) || amount<=0) return alert('Enter a positive amount.');
       if (!account) return alert('Pick an account.');
-      state.txns.push({ id:crypto.randomUUID(), date, type, account, amount:round2(amount), desc });
+      state.txns.push({ id:crypto.randomUUID(), date: iso, type, account, amount:round2(amount), desc });
       save(); clearForm(); render();
     }
 
     function delTxn(id){ state.txns = state.txns.filter(t=>t.id!==id); save(); render(); }
-    function clearForm(){ document.getElementById('date').value=''; document.getElementById('amount').value=''; document.getElementById('desc').value=''; document.getElementById('type').value='EXPENSE'; updateAccountOptions(); }
+    function clearForm(){ document.getElementById('dateUs').value=''; document.getElementById('amount').value=''; document.getElementById('desc').value=''; document.getElementById('type').value='EXPENSE'; updateAccountOptions(); }
 
     function exportJson(){
       const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
@@ -230,7 +231,7 @@
       finally{ document.getElementById('importFileJson').value=''; }
     }
 
-    // CSV import
+    // CSV import (expects MM/DD/YYYY; also accepts ISO as fallback)
     async function importCsv(file){
       try{
         const rows = parseCsv(await file.text());
@@ -248,22 +249,28 @@
         const toAdd=[];
         for (let r=1;r<rows.length;r++){
           const row = rows[r]; if(!row || row.every(c=>!String(c||'').trim())) continue;
-          const normDate = normalizeDate(String(row[idx.date]||'').trim()); if(!normDate) continue;
+          const rawDate = String(row[idx.date]||'').trim();
+          let iso = usToIso(rawDate);
+          if (!iso && /^\d{4}-\d{2}-\d{2}$/.test(rawDate)) iso = rawDate; // allow ISO fallback
+          if (!iso) continue;
+
           let amt = parseFloat(String(row[idx.amount]||'').replace(/[$,]/g,'')); if(isNaN(amt)) continue;
           let rawType = idx.type>=0? String(row[idx.type]||'').trim().toUpperCase() : '';
           let type = rawType.startsWith('I')?'INCOME':rawType.startsWith('E')?'EXPENSE':(amt>=0?'INCOME':'EXPENSE');
           amt = Math.abs(amt);
+
           let account = idx.account>=0? String(row[idx.account]||'').trim() : '';
           if(!account) account = (type==='INCOME')?'Sales':'Other Expense';
           if(type==='EXPENSE' && !expenseAccounts.includes(account)) account='Other Expense';
           if(type==='INCOME' && !incomeAccounts.includes(account)) account='Sales';
+
           const desc = idx.desc>=0 ? String(row[idx.desc]||'').trim() : '';
-          toAdd.push({ id:crypto.randomUUID(), date:normDate, type, account, amount:round2(amt), desc });
+          toAdd.push({ id:crypto.randomUUID(), date:iso, type, account, amount:round2(amt), desc });
         }
         if (!toAdd.length) throw new Error('No valid rows');
         state.txns = state.txns.concat(toAdd); save(); render(); alert(`Imported ${toAdd.length} transactions from CSV.`);
       }catch(e){
-        console.error(e); alert('Could not import CSV. Please use the template.');
+        console.error(e); alert('Could not import CSV. Make sure dates are MM/DD/YYYY.');
       }finally{
         document.getElementById('importFileCsv').value='';
       }
@@ -276,20 +283,6 @@
         while((m=re.exec(line))){ row.push(String(m[1]!==undefined? m[1].replace(/""/g,'"') : m[2]).trim()); }
         out.push(row);
       } return out;
-    }
-
-    function normalizeDate(s){
-      if(!s) return null;
-      if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;                       // YYYY-MM-DD
-      if(/^\d{2}[\/-]\d{2}[\/-]\d{4}$/.test(s)){                         // DD-MM-YYYY or DD/MM/YYYY
-        const [a,b,c]=s.split(/[\/-]/); const dd=+a,mm=+b,yy=+c;
-        if(mm>=1&&mm<=12&&dd>=1&&dd<=31) return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
-      }
-      if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s)){                           // MM/DD/YYYY
-        const [m,d,y]=s.split('/').map(x=>+x); if(m>=1&&m<=12&&d>=1&&d<=31) return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      }
-      const t=new Date(s); if(!isNaN(t.getTime())){ const y=t.getFullYear(),m=t.getMonth()+1,d=t.getDate(); return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
-      return null;
     }
 
     function resetAll(){ if(!confirm('Reset all data? This only clears your browser storage.')) return; state={txns:[]}; save(); render(); }
@@ -316,8 +309,8 @@
       const net = rev-exp;
       const mealsRaw = state.txns.filter(t=>t.type==='EXPENSE'&&t.account==='Meals').reduce((s,t)=>s+t.amount,0);
       const meals50 = Math.min(mealsRaw*0.5,1e12);
-      const l1List = state.txns.filter(t=>t.type==='INCOME').map(t=>`${t.date} • ${t.desc||'Income'} • ${fmt(t.amount)}`);
-      const mealsList = state.txns.filter(t=>t.type==='EXPENSE'&&t.account==='Meals').map(t=>`${t.date} • ${t.desc||'Meal'} • ${fmt(t.amount)}`);
+      const l1List = state.txns.filter(t=>t.type==='INCOME').map(t=>`${isoToUs(t.date)} • ${t.desc||'Income'} • ${fmt(t.amount)}`);
+      const mealsList = state.txns.filter(t=>t.type==='EXPENSE'&&t.account==='Meals').map(t=>`${isoToUs(t.date)} • ${t.desc||'Meal'} • ${fmt(t.amount)}`);
       return {rev,exp,net,mealsRaw,meals50,l1List,mealsList};
     }
 
@@ -325,7 +318,7 @@
       const tbody=document.querySelector('#txTable tbody'); tbody.innerHTML='';
       [...state.txns].sort((a,b)=>(a.date<b.date?1:-1)).forEach(t=>{
         const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${t.date}</td><td class="muted">${t.type}</td><td>${t.account}</td><td>${t.desc?t.desc.replace(/</g,'&lt;'):''}</td><td class="num">${fmt(t.amount)}</td><td class="right"><button class="btn-danger" onclick="delTxn('${t.id}')">Delete</button></td>`;
+        tr.innerHTML=`<td>${isoToUs(t.date)}</td><td class="muted">${t.type}</td><td>${t.account}</td><td>${t.desc?t.desc.replace(/</g,'&lt;'):''}</td><td class="num">${fmt(t.amount)}</td><td class="right"><button class="btn-danger" onclick="delTxn('${t.id}')">Delete</button></td>`;
         tbody.appendChild(tr);
       });
 
