@@ -396,23 +396,11 @@
     load(); updateAccountOptions(); render();
   })();
 
-<!-- Floating feedback button -->
-<a class="feedback-fab" ...>Feedback</a>
-<style>
-  .feedback-fab{
-    position:fixed; right:16px; bottom:16px; z-index:50;
-    background:#12314b; border:1px solid #245f89; color:#8fd3ff;
-    padding:10px 14px; border-radius:999px; text-decoration:none;
-    box-shadow:0 6px 20px rgba(0,0,0,.35)
-  }
-  .feedback-fab:hover{ border-color:#3e58b5 }
-</style>
-
-<!-- Metrics -->
 <script>
 (function () {
-  // --- inject style for the floating button ---
-  const css = `
+  // style for floating button
+  const style = document.createElement('style');
+  style.textContent = `
     .feedback-fab{
       position:fixed; right:16px; bottom:16px; z-index:50;
       background:#12314b; border:1px solid #245f89; color:#8fd3ff;
@@ -421,11 +409,9 @@
     }
     .feedback-fab:hover{ border-color:#3e58b5 }
   `;
-  const style = document.createElement('style');
-  style.textContent = css;
   document.head.appendChild(style);
 
-  // --- inject the floating Feedback button ---
+  // floating Feedback button
   const feedback = document.createElement('a');
   feedback.className = 'feedback-fab';
   feedback.href = 'https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform';
@@ -434,27 +420,24 @@
   feedback.textContent = 'Feedback';
   document.body.appendChild(feedback);
 
-  // --- simple metrics with CountAPI ---
+  // metrics
   const NS = 'fincoreapp_demo';
-  const create = (k) => fetch(`https://api.countapi.xyz/create?namespace=${NS}&key=${k}&value=0`).catch(()=>{});
-  const hit    = (k) => fetch(`https://api.countapi.xyz/hit/${NS}/${k}`, { keepalive: true }).catch(()=>{});
+  const create = k => fetch(`https://api.countapi.xyz/create?namespace=${NS}&key=${k}&value=0`).catch(()=>{});
+  const hit    = k => fetch(`https://api.countapi.xyz/hit/${NS}/${k}`, { keepalive:true }).catch(()=>{});
 
-  // ensure counters exist + count a pageview
   create('pageview'); 
   create('waitlist_click');
   hit('pageview');
 
-  // count clicks to ANY Google Form links (covers button + any text link)
-  document.addEventListener('click', (e) => {
+  // count clicks to any Google Form link (covers button + text link)
+  document.addEventListener('click', e => {
     const a = e.target.closest('a[href]');
     if (!a) return;
     const href = a.href.toLowerCase();
-    if (href.includes('forms.gle') || href.includes('docs.google.com/forms')) {
-      hit('waitlist_click');
-    }
+    if (href.includes('forms.gle') || href.includes('docs.google.com/forms')) hit('waitlist_click');
   });
 
-  // optional: other actions if these buttons exist
+  // optional: other actions
   document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => hit('export_csv'));
   document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => hit('export_json'));
   document.querySelector('button[onclick="loadDemo()"]')?.addEventListener('click', () => hit('load_demo'));
