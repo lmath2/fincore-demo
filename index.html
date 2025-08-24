@@ -177,7 +177,7 @@
     © <span id="yr"></span> FinCoreApp •
     <a href="/privacy.html">Privacy</a> •
     <a href="mailto:lmath@fincoreapp.com">lmath@fincoreapp.com</a>
-     <a href="https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform" target="_blank" rel="noopener">Join the waitlist</a>
+     <a id="waitlistBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform" target="_blank" rel="noopener">Join the waitlist</a>
   </small>
 </footer>
 
@@ -406,5 +406,19 @@
 }
 .feedback-fab:hover{ border-color:#3e58b5 }
   </script>
+  <script>
+// Pageviews
+fetch('https://api.countapi.xyz/hit/fincoreapp_demo/pageview');
+
+// helper
+function bump(key){ fetch('https://api.countapi.xyz/hit/fincoreapp_demo/' + key); }
+
+// Track actions
+document.getElementById('waitlistBtn')?.addEventListener('click', () => bump('waitlist_click'));
+document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => bump('export_csv'));
+document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => bump('export_json'));
+document.querySelector('button.btn-danger, button:contains("Reset")')?.addEventListener('click', () => bump('reset_clicked'));
+</script>
+
 </body>
 </html>
