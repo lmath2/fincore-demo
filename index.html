@@ -406,19 +406,30 @@
 }
 .feedback-fab:hover{ border-color:#3e58b5 }
   </script>
-  <script>
-// Pageviews
+<script>
+// Count a pageview on every load
 fetch('https://api.countapi.xyz/hit/fincoreapp_demo/pageview');
 
 // helper
 function bump(key){ fetch('https://api.countapi.xyz/hit/fincoreapp_demo/' + key); }
 
-// Track actions
-document.getElementById('waitlistBtn')?.addEventListener('click', () => bump('waitlist_click'));
-document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => bump('export_csv'));
-document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => bump('export_json'));
-document.querySelector('button.btn-danger, button:contains("Reset")')?.addEventListener('click', () => bump('reset_clicked'));
+document.addEventListener('DOMContentLoaded', () => {
+  // Track any Google Form links (waitlist/feedback)
+  document.querySelectorAll('a[href*="forms.gle"], a[href*="docs.google.com/forms"]').forEach(a => {
+    a.addEventListener('click', () => bump('waitlist_click'));
+  });
+
+  // If you gave your main waitlist link an id="waitlistBtn", this also tracks it:
+  document.getElementById('waitlistBtn')?.addEventListener('click', () => bump('waitlist_click'));
+
+  // Track other actions
+  document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => bump('export_csv'));
+  document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => bump('export_json'));
+  document.querySelector('button[onclick="loadDemo()"]')?.addEventListener('click', () => bump('load_demo'));
+  document.querySelector('button[onclick="resetAll()"]')?.addEventListener('click', () => bump('reset_clicked'));
+});
 </script>
+
 
 </body>
 </html>
