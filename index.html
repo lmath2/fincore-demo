@@ -397,7 +397,7 @@
   })();
 
 <!-- Floating feedback button -->
-<a class="feedback-fab" href="https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform" target="_blank" rel="noopener">Feedback</a>
+<a class="feedback-fab" ...>Feedback</a>
 <style>
   .feedback-fab{
     position:fixed; right:16px; bottom:16px; z-index:50;
@@ -410,24 +410,41 @@
 
 <!-- Metrics -->
 <script>
+(function () {
+  // --- inject style for the floating button ---
+  const css = `
+    .feedback-fab{
+      position:fixed; right:16px; bottom:16px; z-index:50;
+      background:#12314b; border:1px solid #245f89; color:#8fd3ff;
+      padding:10px 14px; border-radius:999px; text-decoration:none;
+      box-shadow:0 6px 20px rgba(0,0,0,.35)
+    }
+    .feedback-fab:hover{ border-color:#3e58b5 }
+  `;
+  const style = document.createElement('style');
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  // --- inject the floating Feedback button ---
+  const feedback = document.createElement('a');
+  feedback.className = 'feedback-fab';
+  feedback.href = 'https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform';
+  feedback.target = '_blank';
+  feedback.rel = 'noopener';
+  feedback.textContent = 'Feedback';
+  document.body.appendChild(feedback);
+
+  // --- simple metrics with CountAPI ---
   const NS = 'fincoreapp_demo';
+  const create = (k) => fetch(`https://api.countapi.xyz/create?namespace=${NS}&key=${k}&value=0`).catch(()=>{});
+  const hit    = (k) => fetch(`https://api.countapi.xyz/hit/${NS}/${k}`, { keepalive: true }).catch(()=>{});
 
-  // Always create counters (safe if they already exist)
-  function create(key){
-    fetch(`https://api.countapi.xyz/create?namespace=${NS}&key=${key}&value=0`).catch(()=>{});
-  }
-
-  // Increment with keepalive so clicks still count when navigating
-  function hit(key){
-    fetch(`https://api.countapi.xyz/hit/${NS}/${key}`, { keepalive: true }).catch(()=>{});
-  }
-
-  // 1) init + pageview
+  // ensure counters exist + count a pageview
   create('pageview'); 
   create('waitlist_click');
   hit('pageview');
 
-  // 2) count clicks to ANY Google Form links (button or text link)
+  // count clicks to ANY Google Form links (covers button + any text link)
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href]');
     if (!a) return;
@@ -437,11 +454,12 @@
     }
   });
 
-  // 3) optional: other actions if these buttons exist
+  // optional: other actions if these buttons exist
   document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => hit('export_csv'));
   document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => hit('export_json'));
   document.querySelector('button[onclick="loadDemo()"]')?.addEventListener('click', () => hit('load_demo'));
   document.querySelector('button[onclick="resetAll()"]')?.addEventListener('click', () => hit('reset_clicked'));
+})();
 </script>
 
 </body>
