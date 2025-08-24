@@ -396,50 +396,53 @@
     load(); updateAccountOptions(); render();
   })();
 
+<!-- Floating feedback button -->
 <a class="feedback-fab" href="https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform" target="_blank" rel="noopener">Feedback</a>
 
 <style>
-.feedback-fab{
-  position:fixed; right:16px; bottom:16px; z-index:50;
-  background:#12314b; border:1px solid #245f89; color:#8fd3ff;
-  padding:10px 14px; border-radius:999px; text-decoration:none;
-  box-shadow:0 6px 20px rgba(0,0,0,.35)
-}
-.feedback-fab:hover{ border-color:#3e58b5 }
-</style>
-<script>
-const NS = 'fincoreapp_demo';
-
-// Always create counters (safe if they already exist)
-function create(key){
-  fetch(`https://api.countapi.xyz/create?namespace=${NS}&key=${key}&value=0`).catch(()=>{});
-}
-
-// Increment with keepalive so clicks still count when opening new tabs
-function hit(key){
-  fetch(`https://api.countapi.xyz/hit/${NS}/${key}`, { keepalive: true }).catch(()=>{});
-}
-
-// 1) init + pageview
-create('pageview'); 
-create('waitlist_click');
-hit('pageview');
-
-// 2) count clicks to ANY Google Form links (button or text link)
-document.addEventListener('click', (e) => {
-  const a = e.target.closest('a[href]');
-  if (!a) return;
-  const href = a.href.toLowerCase();
-  if (href.includes('forms.gle') || href.includes('docs.google.com/forms')) {
-    hit('waitlist_click');
+  .feedback-fab{
+    position:fixed; right:16px; bottom:16px; z-index:50;
+    background:#12314b; border:1px solid #245f89; color:#8fd3ff;
+    padding:10px 14px; border-radius:999px; text-decoration:none;
+    box-shadow:0 6px 20px rgba(0,0,0,.35)
   }
-});
+  .feedback-fab:hover{ border-color:#3e58b5 }
+</style>
 
-// 3) optional: other actions if these buttons exist
-document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => hit('export_csv'));
-document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => hit('export_json'));
-document.querySelector('button[onclick="loadDemo()"]')?.addEventListener('click', () => hit('load_demo'));
-document.querySelector('button[onclick="resetAll()"]')?.addEventListener('click', () => hit('reset_clicked'));
+<!-- Metrics -->
+<script>
+  const NS = 'fincoreapp_demo';
+
+  // Always create counters (safe if they already exist)
+  function create(key){
+    fetch(`https://api.countapi.xyz/create?namespace=${NS}&key=${key}&value=0`).catch(()=>{});
+  }
+
+  // Increment with keepalive so clicks still count when navigating
+  function hit(key){
+    fetch(`https://api.countapi.xyz/hit/${NS}/${key}`, { keepalive: true }).catch(()=>{});
+  }
+
+  // 1) init + pageview
+  create('pageview'); 
+  create('waitlist_click');
+  hit('pageview');
+
+  // 2) count clicks to ANY Google Form links (button or text link)
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    const href = a.href.toLowerCase();
+    if (href.includes('forms.gle') || href.includes('docs.google.com/forms')) {
+      hit('waitlist_click');
+    }
+  });
+
+  // 3) optional: other actions if these buttons exist
+  document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => hit('export_csv'));
+  document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => hit('export_json'));
+  document.querySelector('button[onclick="loadDemo()"]')?.addEventListener('click', () => hit('load_demo'));
+  document.querySelector('button[onclick="resetAll()"]')?.addEventListener('click', () => hit('reset_clicked'));
 </script>
 
 </body>
