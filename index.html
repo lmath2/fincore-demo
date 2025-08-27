@@ -420,11 +420,6 @@
   feedback.textContent = 'Feedback';
   document.body.appendChild(feedback);
 
-  // metrics
-  const NS = 'fincoreapp_demo';
-  const create = k => fetch(`https://api.countapi.xyz/create?namespace=${NS}&key=${k}&value=0`).catch(()=>{});
-  const hit    = k => fetch(`https://api.countapi.xyz/hit/${NS}/${k}`, { keepalive:true }).catch(()=>{});
-
   create('pageview'); 
   create('waitlist_click');
   hit('pageview');
