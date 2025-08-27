@@ -420,18 +420,6 @@
   feedback.textContent = 'Feedback';
   document.body.appendChild(feedback);
 
-  create('pageview'); 
-  create('waitlist_click');
-  hit('pageview');
-
-  // count clicks to any Google Form link (covers button + text link)
-  document.addEventListener('click', e => {
-    const a = e.target.closest('a[href]');
-    if (!a) return;
-    const href = a.href.toLowerCase();
-    if (href.includes('forms.gle') || href.includes('docs.google.com/forms')) hit('waitlist_click');
-  });
-
   // optional: other actions
   document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => hit('export_csv'));
   document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => hit('export_json'));
