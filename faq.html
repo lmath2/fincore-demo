@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FAQ — FinCoreApp</title>
+  <meta name="description" content="Answers about the FinCoreApp demo, privacy, roadmap, and how Books connect to Taxes." />
+  <link rel="canonical" href="https://demo.fincoreapp.com/faq.html" />
+  <meta property="og:title" content="FAQ — FinCoreApp" />
+  <meta property="og:description" content="What the demo includes, what data is stored, and what’s planned next for FinCoreApp." />
+  <meta property="og:image" content="https://demo.fincoreapp.com/og.png" />
+  <meta property="og:url" content="https://demo.fincoreapp.com/faq.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    :root{--bg:#0b1020;--panel:#111a2c;--muted:#aab1d6;--brand:#8fd3ff;--brand2:#245f89}
+    body{margin:0;font:16px/1.6 system-ui,Segoe UI,Inter,Arial;background:#0b1020;color:#e7ecff}
+    .wrap{max-width:900px;margin:48px auto;padding:0 20px}
+    h1,h2{line-height:1.2;margin:.2em 0}
+    .muted{color:var(--muted)}
+    details{background:var(--panel);border:1px solid #1f3050;border-radius:14px;padding:16px;margin:14px 0}
+    summary{cursor:pointer;font-weight:600}
+    a{color:var(--brand)}
+    nav{display:flex;gap:14px;margin-bottom:16px}
+    nav a{color:var(--brand);text-decoration:none}
+    nav a:hover{text-decoration:underline}
+    footer{margin-top:32px;color:var(--muted)}
+  </style>
+  <!-- Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"0680dc4c1a9a4741ab91f22aa78ed3fd"}'></script>
+</head>
+<body>
+  <div class="wrap">
+    <nav aria-label="Site">
+      <a href="/">Demo</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/faq.html" aria-current="page">FAQ</a>
+      <a href="/privacy.html">Privacy</a>
+    </nav>
+
+    <h1>FAQ</h1>
+    <p class="muted">The most common questions about the demo and what’s next.</p>
+
+    <details>
+      <summary>What does the demo include?</summary>
+      <p>The demo focuses on a freelancer/sole-prop vertical slice: manual transactions, Profit &amp; Loss, and a simplified Schedule C preview.</p>
+    </details>
+
+    <details>
+      <summary>Where is my data stored?</summary>
+      <p>Locally in your browser (no server). You can clear or export at any time. For beta cloud accounts, data will be stored securely with strict access controls.</p>
+    </details>
+
+    <details>
+      <summary>How do Books connect to Taxes?</summary>
+      <p>Each category maps to a tax line. As you add or categorize transactions, the tax preview updates in real time with explanations.</p>
+    </details>
+
+    <details>
+      <summary>Will you support bank feeds and OCR?</summary>
+      <p>Yes. Planned integrations include Plaid for bank feeds and Textract-style OCR for bills/receipts with human-in-the-loop verification.</p>
+    </details>
+
+    <details>
+      <summary>When will pricing start?</summary>
+      <p>Beta is free while we build. Final pricing will reflect usage (entities, users, filings) with a generous free tier for small businesses.</p>
+    </details>
+
+    <details>
+      <summary>How can I give feedback or join the beta?</summary>
+      <p>Use the Feedback button or email <a href="mailto:lmath@fincoreapp.com">lmath@fincoreapp.com</a>. To join the beta, <a href="/waitlist.html" target="_blank" rel="noopener">join the waitlist</a>.</p>
+    </details>
+
+    <footer>
+      <small>
+        © <span id="yr"></span> FinCoreApp •
+        <a href="/pricing.html">Pricing</a> •
+        <a href="/privacy.html">Privacy</a> •
+        <a href="mailto:lmath@fincoreapp.com">lmath@fincoreapp.com</a>
+      </small>
+    </footer>
+  </div>
+  <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>
