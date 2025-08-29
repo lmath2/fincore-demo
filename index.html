@@ -177,14 +177,18 @@
     </section>
   </main>
 
- <footer>
+<footer>
   <small class="muted">
     © <span id="yr"></span> FinCoreApp •
     <a href="/privacy.html">Privacy</a> •
-    <a href="mailto:lmath@fincoreapp.com">lmath@fincoreapp.com</a>
+    <a href="/terms.html">Terms</a> •
+    <a href="mailto:lmath@fincoreapp.com">lmath@fincoreapp.com</a> •
     <a id="waitlistBtn" href="/waitlist.html" target="_blank" rel="noopener">Join the waitlist</a>
   </small>
 </footer>
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
 
   <script>
   (function(){
