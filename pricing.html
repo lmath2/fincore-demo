@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pricing — FinCoreApp</title>
+  <meta name="description" content="Simple pricing. Free demo today. Beta is free while we build the next-gen SMB accounting platform." />
+  <link rel="canonical" href="https://demo.fincoreapp.com/pricing.html" />
+  <meta property="og:title" content="Pricing — FinCoreApp" />
+  <meta property="og:description" content="Free demo. Beta is $0 while we build. FinCoreApp unifies Books → Taxes with safe defaults and real-time insights." />
+  <meta property="og:image" content="https://demo.fincoreapp.com/og.png" />
+  <meta property="og:url" content="https://demo.fincoreapp.com/pricing.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    :root{--bg:#0b1020;--panel:#111a2c;--muted:#aab1d6;--brand:#8fd3ff;--brand2:#245f89}
+    body{margin:0;font:16px/1.6 system-ui,Segoe UI,Inter,Arial;background:#0b1020;color:#e7ecff}
+    .wrap{max-width:900px;margin:48px auto;padding:0 20px}
+    h1,h2{line-height:1.2;margin:.2em 0}
+    .muted{color:var(--muted)}
+    .card{background:var(--panel);border:1px solid #1f3050;border-radius:14px;padding:24px;margin-top:24px}
+    .price{font-size:42px;color:var(--brand);font-weight:700}
+    a.btn{display:inline-block;background:#12314b;color:var(--brand);
+      border:1px solid var(--brand2);padding:10px 16px;border-radius:10px;text-decoration:none}
+    a.btn:hover{border-color:#3e58b5}
+    footer{margin-top:48px;color:var(--muted)}
+    nav{display:flex;gap:14px;margin-bottom:16px}
+    nav a{color:var(--brand);text-decoration:none}
+    nav a:hover{text-decoration:underline}
+  </style>
+  <!-- Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"0680dc4c1a9a4741ab91f22aa78ed3fd"}'></script>
+</head>
+<body>
+  <div class="wrap">
+    <nav aria-label="Site">
+      <a href="/">Demo</a>
+      <a href="/pricing.html" aria-current="page">Pricing</a>
+      <a href="/faq.html">FAQ</a>
+      <a href="/privacy.html">Privacy</a>
+    </nav>
+
+    <h1>Pricing</h1>
+    <p class="muted">Keep it simple while we build together.</p>
+
+    <div class="card">
+      <h2>Beta</h2>
+      <p class="price">$0</p>
+      <ul>
+        <li>Full demo access (Books → Tax Preview)</li>
+        <li>Local-only data (no server required)</li>
+        <li>Early-adopter feedback loop</li>
+      </ul>
+      <p><a class="btn" href="/waitlist.html" target="_blank" rel="noopener">Join the waitlist</a></p>
+    </div>
+
+    <div class="card">
+      <h2>What’s coming after Beta</h2>
+      <ul>
+        <li>Secure cloud accounts & multi-user roles</li>
+        <li>Bank feeds, rules, OCR bills/receipts</li>
+        <li>Sales-tax & 1040/state filing workflow</li>
+        <li>Extensions & API</li>
+      </ul>
+      <p class="muted">Final pricing will reflect usage (entities, users, and filings) with generous free tier.</p>
+    </div>
+
+    <footer>
+      <small>
+        © <span id="yr"></span> FinCoreApp •
+        <a href="/privacy.html">Privacy</a> •
+        <a href="mailto:lmath@fincoreapp.com">lmath@fincoreapp.com</a> •
+        <a href="/faq.html">FAQ</a>
+      </small>
+    </footer>
+  </div>
+  <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>
