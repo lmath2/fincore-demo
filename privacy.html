@@ -1,23 +1,43 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FinCoreApp — Privacy</title>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon='{"token":"0680dc4c1a9a4741ab91f22aa78ed3fd"}'></script>
+
   <style>
-    body{font-family:system-ui,Inter,Segoe UI,Roboto,Arial,sans-serif;max-width:820px;margin:40px auto;padding:0 16px;line-height:1.6;color:#e8ebff;background:#0b1020}
-    a{color:#8fd3ff;text-decoration:none} a:hover{opacity:.9}
-    h1{margin:0 0 12px} .card{background:#131a33;border:1px solid #1d2549;border-radius:12px;padding:18px}
-    small{color:#aab1d6}
+    :root{--bg:#0b1020;--ink:#e8ebff;--muted:#aab1d6}
+    body{margin:0;font:16px/1.5 system-ui,Segoe UI,Inter,Arial;background:var(--bg);color:var(--ink)}
+    .wrap{max-width:800px;margin:40px auto;padding:0 16px}
+    a{color:#8fd3ff}
+    h1{margin:0 0 12px}
+    p,li{color:var(--muted)}
   </style>
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="%23131a33"/><text x="50%" y="58%" font-size="34" text-anchor="middle" fill="%238fd3ff" font-family="Arial,Helvetica,sans-serif">F</text></svg>' />
 </head>
 <body>
-  <h1>Privacy</h1>
-  <div class="card">
-    <p><strong>Demo (demo.fincoreapp.com)</strong> stores your data locally in your own browser (Local Storage). We do not receive it.</p>
-    <p>If you join the waitlist or send feedback, we collect the information you submit so we can contact you about early access and product updates. We don’t sell your data. You can request deletion anytime.</p>
-    <p>Contact: email <a href="mailto:lmath@fincoreapp.com">lmath@fincoreapp.com</a> or use the <a href="https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform" target="_blank" rel="noopener">waitlist form</a>.</p>
-    <p><small>Last updated: <script>document.write(new Date().toISOString().slice(0,10))</script></small></p>
+  <div class="wrap">
+    <h1>Privacy</h1>
+    <p>Last updated: <script>document.write(new Date().toISOString().slice(0,10))</script></p>
+
+    <p>FinCoreApp is a demo that runs entirely in your browser. We don’t have servers and
+       we don’t store your data. Any transactions you enter are kept in your browser’s
+       local storage and disappear if you clear your cache.</p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li>Anonymous usage metrics (page views) via Cloudflare Web Analytics.</li>
+      <li>If you join the waitlist, the Google Form you submit stores your responses in our Google account.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Email: <a href="mailto:hello@fincoreapp.com">hello@fincoreapp.com</a></p>
+
+    <p><a href="/">← Back to the app</a></p>
   </div>
-  <p style="margin-top:14px;"><a href="/">← Back to FinCoreApp</a></p>
 </body>
 </html>
