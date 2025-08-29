@@ -66,7 +66,7 @@
   <header class="container">
     <div class="topbar">
       <h1>FinCoreApp — Books → Tax Preview (Freelancers MVP) <span class="pill">100% Free / No Backend</span></h1>
-      <a class="btn btn-accent" href="https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform" target="_blank" rel="noopener">Join the waitlist</a>
+      <a class="btn btn-accent" href="/waitlist.html" target="_blank" rel="noopener">Join the waitlist</a>
       <a class="btn" href="fincore-sample.csv" download>CSV template</a>
     </div>
   </header>
@@ -418,18 +418,12 @@
   // floating Feedback button
   const feedback = document.createElement('a');
   feedback.className = 'feedback-fab';
-  feedback.href = 'https://docs.google.com/forms/d/e/1FAIpQLSd19Rrlle7zdaeW2Vc8BjzYm2GWobOEbqXgDdfih8VpcXMqtg/viewform';
+  feedback.href = '/waitlist.html';
   feedback.target = '_blank';
   feedback.rel = 'noopener';
   feedback.textContent = 'Feedback';
   document.body.appendChild(feedback);
 
-  // optional: other actions
-  document.querySelector('button[onclick="exportCsv()"]')?.addEventListener('click', () => hit('export_csv'));
-  document.querySelector('button[onclick="exportJson()"]')?.addEventListener('click', () => hit('export_json'));
-  document.querySelector('button[onclick="loadDemo()"]')?.addEventListener('click', () => hit('load_demo'));
-  document.querySelector('button[onclick="resetAll()"]')?.addEventListener('click', () => hit('reset_clicked'));
-})();
 </script>
 
 </body>
