@@ -68,12 +68,6 @@
   <!-- Favicons -->
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="%23131a33"/><text x="50%" y="58%" font-size="34" text-anchor="middle" fill="%238fd3ff" font-family="Arial,Helvetica,sans-serif">F</text></svg>' />
 
-  <!-- Social/preview meta -->
-  <meta property="og:title" content="FinCoreApp — Books → Tax Preview (Demo)">
-  <meta property="og:description" content="US freelancers: add transactions, see instant P&L and a live Schedule C preview.">
-  <meta property="og:url" content="https://demo.fincoreapp.com">
-  <meta name="twitter:card" content="summary">
-
   <!-- Cloudflare Web Analytics -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token":"0680dc4c1a9a4741ab91f22aa78ed3fd"}'></script>
@@ -93,7 +87,7 @@
   <a href="/pricing.html" style="color:#8fd3ff;text-decoration:none">Pricing</a>
   <a href="/faq.html" style="color:#8fd3ff;text-decoration:none">FAQ</a>
   <a href="/privacy.html" style="color:#8fd3ff;text-decoration:none">Privacy</a>
-  <a href="/terms.html" style="color:#8fd3ff;text-decoration:none">terms</a>
+  <a href="/terms.html" style="color:#8fd3ff;text-decoration:none">Terms</a>
 </nav>
 
  
@@ -105,7 +99,8 @@
       <div class="row" aria-label="Add Transaction">
         <div>
           <label for="dateUs">Date (MM/DD/YYYY)</label>
-          <input type="text" id="dateUs" placeholder="MM/DD/YYYY" inputmode="numeric" pattern="\\d{1,2}/\\d{1,2}/\\d{4}">
+         <input type="text" id="dateUs" placeholder="MM/DD/YYYY"
+       inputmode="numeric" pattern="\d{1,2}/\d{1,2}/\d{4}">
         </div>
         <div>
           <label for="type">Type</label>
@@ -159,10 +154,16 @@
       <div style="margin-top:14px; overflow:auto;">
         <table id="txTable" aria-label="Transactions">
           <thead>
-            <tr>
-              <th>Date</th><th>Type</th><th>Account</th><th>Description</th><th class="right">Amount</th><th></th>
-            </tr>
-          </thead>
+           <tr>
+    <th scope="col">Date</th>
+    <th scope="col">Type</th>
+    <th scope="col">Account</th>
+    <th scope="col">Description</th>
+    <th scope="col" class="right">Amount</th>
+    <th scope="col"><span class="visually-hidden">Actions</span></th>
+  </tr>
+</thead>
+
           <tbody></tbody>
         </table>
       </div>
